@@ -1,5 +1,73 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { ProgressCircular, Theme } from '@lumx/react';
+import { fetchCharacters, fetchReactions } from '../../api';
+import { Character, Reaction } from '../../types';
+import { CharacterCard } from '../CharacterCard';
+import { Pagination } from '../Pagination';
+import styles from './Content.module.scss';
 
-export const Content: React.FC = () => {
-  return <section className="lumx-spacing-padding-huge" />;
+const PAGE_SIZE = 4;
+
+interface ContentProps {
+  searchQuery: string;
+}
+
+export const Content: React.FC<ContentProps> = ({ searchQuery }) => {
+
+  const [characters, setCharacters] = useState<Character[]>([]);
+  const [reactions, setReactions] = useState<Reaction[]>([]);
+  const [page, setPage] = useState(1);
+  const [total, setTotal] = useState(0);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const totalPages = Math.ceil(total / PAGE_SIZE);
+
+  useEffect(() => {
+    setPage(1);
+  }, [searchQuery]);
+
+  useEffect(() => {
+    setIsLoading(true);
+    setError(null);
+    fetchCharacters(searchQuery, page, PAGE_SIZE)
+      .then(data => {
+        setCharacters(data.results);
+        setTotal(data.total);
+      })
+      .catch(() => setError('Something went wrong. Please try again.'))
+      .finally(() => setIsLoading(false));
+  }, [searchQuery, page]);
+
+  useEffect(() => {
+    fetchReactions().then(data => setReactions(data.reactions));
+  }, []);
+
+  return (
+    <div className={styles.content}>
+      <div className={styles.list}>
+        {isLoading ? (
+          <div className={styles.centered}>
+            <ProgressCircular theme={Theme.dark} />
+          </div>
+        ) : error ? (
+          <div className={styles.centered}>
+            <p>{error}</p>
+          </div>
+        ) : characters.length === 0 ? (
+          <div className={styles.centered}>
+            <p>No characters found{searchQuery ? ` for "${searchQuery}"` : ''}.</p>
+          </div>
+        ) : (
+          characters.map((character) => {
+            const characterReactions = reactions.filter(r => r.characterId === character.id);
+            return <CharacterCard key={character.id} character={character} reactions={characterReactions} />;
+          })
+        )}
+      </div>
+      <div className={styles.paginationBar}>
+        <Pagination currentPage={page} totalPages={totalPages} onPageChange={setPage} />
+      </div>
+    </div>
+  );
 }

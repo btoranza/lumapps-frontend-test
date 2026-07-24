@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 import {
   BrowserRouter as Router,
@@ -8,14 +8,21 @@ import {
 
 import { Header } from '../Header';
 import { Content } from '../Content';
+import styles from './App.module.scss';
 
 export const App: React.FC = () => {
+  const [searchQuery, setSearchQuery] = useState('');
+
   return (
     <Router>
-			<Header />
-			<Routes>
-				<Route path="/" element={<Content />} />
-			</Routes>
-		</Router>
+      <div className={styles.app}>
+        <Header onSearch={setSearchQuery} />
+        <main className={styles.main}>
+          <Routes>
+            <Route path="/" element={<Content searchQuery={searchQuery} />} />
+          </Routes>
+        </main>
+      </div>
+    </Router>
   );
 }

@@ -10,7 +10,8 @@ export const handlers = [
     if (searchName) {
       const lowerSearchName = searchName.toLowerCase();
       filteredData = allCharacters.filter(character =>
-        character.name.toLowerCase().includes(lowerSearchName)
+        // Changed from `includes` to `startsWith` to match the requirement: results should display characters whose name starts with the search text.
+        character.name.toLowerCase().startsWith(lowerSearchName)
       );
     }
 

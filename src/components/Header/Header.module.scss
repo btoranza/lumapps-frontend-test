@@ -1,11 +1,11 @@
-$primary-color: #20232a;
-$text-color: white;
-
 .header {
-  padding: 10px 20px;
-  background-color: #f8f8f8; // Light gray background
-  border-bottom: 1px solid #ddd;
-  min-height: 50px; // Ensure a standard height
+  padding: 0px 20px;
+  background-color: #f0e76d;
+  border-bottom: 1px solid #f0e76d;
+  min-height: 50px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.7);
+  position: relative;
+  z-index: 1;
 
   .logo img {
     height: 100px;
