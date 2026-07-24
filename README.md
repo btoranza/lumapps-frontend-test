@@ -6,7 +6,7 @@ Welcome to the LumApps Frontend Technical Test. In this test, the candidate will
 
 ## What is the candidate going to develop?
 
-### Description 
+### Description
 
 In this technical test, the idea is to create a simple frontend application that retrieves data from a server and renders a list of entities. The candidate will be using a locally provided API in order to list the different characters, and the candidate needs to allow the user to search for a character based on their name. The main page should:
 - When the user searches for a character, by typing on the Search field, and hits enter, a list of 4 results will be displayed. The results displayed should display characters where their name starts with the text entered by the user on the Search field.
@@ -43,7 +43,7 @@ The candidate should not control how much time they are taking to fulfill the te
 
 The objective of this test is to evaluate different topics of frontend development. Specifically:
 - The level of expertise that a candidate has with the web stack, which includes HTML, CSS and JavaScript, and how the candidate uses these languages in order to solve a problem.
-- The level of expertise when it comes to JavaScript and React in general. 
+- The level of expertise when it comes to JavaScript and React in general.
 - The attention that the candidate has for the general quality of the application. Specifically in terms of:
     - Accessibility
     - Performance
@@ -81,8 +81,40 @@ This will setup the necessary dependencies to execute this project.
 
 The candidate will need to use Node JS v.20.11.1 in order to run this project. Not doing so will result in an error. The candidate can install this particular version using [nvm](https://github.com/nvm-sh/nvm).
 
+> **Note:** The version of Vite included in this project's dependencies requires Node.js v20.19+ or v22.12+, which is incompatible with the v20.11.1 specified above. This project runs correctly with **Node v22**:
+> ```
+> nvm install 22
+> nvm use 22
+> ```
+
 To start development, the candidate can execute `yarn start`, which will run the app in development mode.
 
 ## Project delivery
 
 This project should be accessible on GitHub as either a private or public repository. The candidate's recruiter will provide further details when it comes to who to give access to the repository.
+
+---
+
+## Implementation notes
+
+### Features implemented
+- **Search**: real-time search with 300ms debounce as the user types, also triggered on Enter. Results filter characters whose name starts with the entered text.
+- **Character list**: displays 4 results per page, each card shows image, name, description, species, birth year, affiliations and reactions.
+- **Reactions**: fetched from the `/api/reactions` endpoint, grouped by emoji (duplicate reactions show a count), deleted reactions are filtered out.
+- **Pagination**: fixed at the bottom of the viewport, updates the list without full page reload.
+- **Clear search**: button appears inside the search field when there is text, resets results on click.
+
+### Edge cases handled
+- Loading state (spinner while fetching)
+- Empty state (message when no results are found)
+- Error state (message if the API call fails)
+- Characters with missing optional fields (image, description, birth year)
+- Duplicate reaction IDs in the API data
+- Single fetch per search query change (no double-fetch race condition)
+
+### Tech decisions
+- **@lumx/react** design system used for `Chip`, `Button`, `TextField`, `ProgressCircular` and other components.
+- **CSS Modules** with SCSS for component-scoped styles and a dark theme defined via CSS custom properties in `index.scss`.
+- **Mock Service Worker (MSW)** intercepts API calls in the browser — no backend required.
+- **Responsive design**: cards switch to a vertical layout (image on top) on screens narrower than 600px.
+- Custom `useDebounce` hook extracted for reusability.
