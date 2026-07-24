@@ -41,6 +41,7 @@ export const Header: React.FC<HeaderProps> = ({ onSearch }) => {
         />
 
         <TextField
+          className={styles.searchField}
           theme={Theme.light}
           icon={mdiMagnify}
           onChange={setValue}

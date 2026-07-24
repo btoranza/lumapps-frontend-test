@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { ProgressCircular, Theme } from '@lumx/react';
 import { fetchCharacters, fetchReactions } from '../../api';
 import { Character, Reaction } from '../../types';
@@ -22,15 +22,20 @@ export const Content: React.FC<ContentProps> = ({ searchQuery }) => {
   const [error, setError] = useState<string | null>(null);
 
   const totalPages = Math.ceil(total / PAGE_SIZE);
+  const prevSearchQuery = useRef(searchQuery);
 
   useEffect(() => {
-    setPage(1);
-  }, [searchQuery]);
+    const pageToFetch = prevSearchQuery.current !== searchQuery ? 1 : page;
+    prevSearchQuery.current = searchQuery;
 
-  useEffect(() => {
+    if (pageToFetch !== page) {
+      setPage(1);
+      return;
+    }
+
     setIsLoading(true);
     setError(null);
-    fetchCharacters(searchQuery, page, PAGE_SIZE)
+    fetchCharacters(searchQuery, pageToFetch, PAGE_SIZE)
       .then(data => {
         setCharacters(data.results);
         setTotal(data.total);

@@ -10,5 +10,11 @@
   .logo img {
     height: 100px;
   }
+
+  .searchField {
+    width: 250px;
+    @media (max-width: 600px) {
+      width: 200px;
+    }  }
 }
 

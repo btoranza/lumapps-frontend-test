@@ -1,4 +1,5 @@
 $image-size: 200px;
+$image-size-mobile: 100%;
 
 .chipBlue {
   color: #90caf9 !important;
@@ -25,12 +26,22 @@ $image-size: 200px;
   box-shadow: 0 2px 8px var(--color-shadow);
   border-radius: 8px;
 
+  @media (max-width: 600px) {
+    flex-direction: column;
+  }
+
   .image {
     width: $image-size;
     height: $image-size;
     object-fit: cover;
     flex-shrink: 0;
     align-self: center;
+
+    @media (max-width: 600px) {
+      width: $image-size-mobile;
+      height: 200px;
+      border-radius: 4px;
+    }
   }
 
   .imagePlaceholder {
@@ -46,6 +57,11 @@ $image-size: 200px;
     font-weight: bold;
     color: var(--color-accent);
     text-transform: uppercase;
+
+    @media (max-width: 600px) {
+      width: $image-size-mobile;
+      height: 200px;
+    }
   }
 
   .info {
